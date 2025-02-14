@@ -10,7 +10,6 @@ public class HeartbeatController {
         @Autowired
         private HeartbeatSensor heartbeatSensor ;
 
-
     @GetMapping("/heartbeat")
     public int GetHeartbeat() {
 
