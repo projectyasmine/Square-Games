@@ -4,8 +4,8 @@ public class UserDto {
     public final String id;
     public final String email;
 
-    public UserDto(int updatedUserId, String id, String email) {
-        this.id = id;
+    public UserDto(int id, String email) {
+        this.id = String.valueOf(id);
         this.email = email;
     }
 

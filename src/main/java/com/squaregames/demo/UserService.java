@@ -1,11 +1,21 @@
 package com.squaregames.demo;
 
-import java.util.List;
+import jakarta.validation.Valid;
+
+import java.util.ArrayList;
 
 public interface UserService {
-    User createUser(User user);
-    User getUserById(int id);
-    List<User> getAllUsers();
-    User updateUser(int id, User user);
-    void deleteUser(int id);
+
+    User getUserById(int userId);
+
+    ArrayList<User> getAllUsers();
+
+    User updateUser(int userId, User user);
+
+    void deleteUser(int userId);
+
+    UserDto createUser(@Valid UserCreationParams params);
+
+    UserDto getUser(String userId);
 }
+

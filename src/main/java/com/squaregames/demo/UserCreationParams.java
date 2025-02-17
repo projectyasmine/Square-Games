@@ -14,15 +14,11 @@ public class UserCreationParams {
         this.password = password;
     }
 
-    public String getName() {
-        return "";
-    }
-
     public String getEmail() {
-        return "";
+        return email;
     }
 
     public String getPassword() {
-        return "";
+        return password;
     }
 }
