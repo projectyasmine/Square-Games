@@ -9,18 +9,17 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Service
 public class UserServiceImpl implements UserService {
 
+    private UserDao userDao;
+
     // Déclaration et initialisation de la liste des utilisateurs
-    private List<User> users = new ArrayList<>();
+    private final List<User> users = new ArrayList<>();
 
     // Déclaration et initialisation du compteur atomique pour les IDs
-    private AtomicInteger idCounter = new AtomicInteger();
+    private final AtomicInteger idCounter = new AtomicInteger();
 
     @Override
     public User getUserById(int userId) {
-        return users.stream()
-                .filter(user -> user.getId() == userId)
-                .findFirst()
-                .orElse(null);
+        return userDao.findById(userId).orElse(null);
     }
 
     @Override
@@ -35,13 +34,14 @@ public class UserServiceImpl implements UserService {
             existingUser.setName(user.getName());
             existingUser.setEmail(user.getEmail());
             existingUser.setPassword(user.getPassword());
+            return userDao.upsert(existingUser);
         }
-        return existingUser;
+        return null;
     }
 
     @Override
     public void deleteUser(int userId) {
-        users.removeIf(user -> user.getId() == userId);
+        userDao.delete(userId);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService {
         newUser.setId(idCounter.incrementAndGet());
         newUser.setEmail(params.email);
         newUser.setPassword(params.password);
-        users.add(newUser);
+        userDao.upsert(newUser);
         return new UserDto(newUser.getId(), newUser.getEmail());
     }
 
