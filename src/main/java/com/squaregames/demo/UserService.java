@@ -2,13 +2,13 @@ package com.squaregames.demo;
 
 import jakarta.validation.Valid;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface UserService {
 
     User getUserById(int userId);
 
-    ArrayList<User> getAllUsers();
+    List<User> getAllUsers();
 
     User updateUser(int userId, User user);
 

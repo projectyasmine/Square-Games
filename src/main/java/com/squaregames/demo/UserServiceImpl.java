@@ -1,30 +1,27 @@
 package com.squaregames.demo;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    private UserDao userDao;
+    @Autowired
+    private UserDao userDao; // Injection de dépendances correcte
 
-    // Déclaration et initialisation de la liste des utilisateurs
-    private final List<User> users = new ArrayList<>();
-
-    // Déclaration et initialisation du compteur atomique pour les IDs
     private final AtomicInteger idCounter = new AtomicInteger();
 
     @Override
     public User getUserById(int userId) {
-        return userDao.findById(userId).orElse(null);
+        return userDao.findById(userId);
     }
 
     @Override
-    public ArrayList<User> getAllUsers() {
-        return new ArrayList<>(users);
+    public List<User> getAllUsers() {
+        return userDao.findAll();
     }
 
     @Override
@@ -48,6 +45,7 @@ public class UserServiceImpl implements UserService {
     public UserDto createUser(UserCreationParams params) {
         User newUser = new User();
         newUser.setId(idCounter.incrementAndGet());
+        newUser.setName(params.name);
         newUser.setEmail(params.email);
         newUser.setPassword(params.password);
         userDao.upsert(newUser);

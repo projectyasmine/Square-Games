@@ -1,5 +1,7 @@
 package com.squaregames.demo;
 
+import jakarta.validation.constraints.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -17,8 +19,8 @@ public class InMemoryUserDao implements UserDao {
     }
 
     @Override
-    public Optional<User> findById(int userId) {
-        return Optional.ofNullable(userMap.get(userId));
+    public User findById(@NotNull int userId) {
+        return userMap.get(userId); // Retourne directement l'utilisateur ou null si non trouvé
     }
 
     @Override
