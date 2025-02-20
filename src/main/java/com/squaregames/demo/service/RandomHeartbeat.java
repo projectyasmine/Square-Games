@@ -1,11 +1,11 @@
-package com.squaregames.demo;
+package com.squaregames.demo.service;
 
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
 
 @Service
-public class RandomHeartbeat implements HeartbeatSensor{
+public class RandomHeartbeat implements HeartbeatSensor {
 
     private final Random rand = new Random();
 

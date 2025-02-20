@@ -1,4 +1,4 @@
-package com.squaregames.demo;
+package com.squaregames.demo.controller;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;

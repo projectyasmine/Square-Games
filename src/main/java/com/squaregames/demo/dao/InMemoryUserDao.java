@@ -1,17 +1,16 @@
-package com.squaregames.demo;
+package com.squaregames.demo.dao;
 
+import com.squaregames.demo.service.User;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class InMemoryUserDao implements UserDao {
-    private final ConcurrentMap<Integer, User> userMap = new ConcurrentHashMap<>();
-    private final AtomicInteger idCounter = new AtomicInteger();
+    private final ConcurrentMap<UUID, User> userMap = new ConcurrentHashMap<>();
 
     @Override
     public List<User> findAll() {
@@ -19,21 +18,21 @@ public class InMemoryUserDao implements UserDao {
     }
 
     @Override
-    public User findById(@NotNull int userId) {
-        return userMap.get(userId); // Retourne directement l'utilisateur ou null si non trouvé
+    public User findById(@NotNull UUID userId) {
+        return userMap.get(userId);
     }
 
     @Override
     public User upsert(User user) {
-        if (user.getId() == 0) {
-            user.setId(idCounter.incrementAndGet());
+        if (user.getId() == null) {
+            user.setId(UUID.randomUUID());
         }
         userMap.put(user.getId(), user);
         return user;
     }
 
     @Override
-    public void delete(int userId) {
+    public void delete(UUID userId) {
         userMap.remove(userId);
     }
 }

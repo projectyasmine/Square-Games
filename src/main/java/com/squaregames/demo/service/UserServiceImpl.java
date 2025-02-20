@@ -1,21 +1,24 @@
-package com.squaregames.demo;
+package com.squaregames.demo.service;
 
+import com.squaregames.demo.controller.UserCreationParams;
+import com.squaregames.demo.controller.UserDto;
+import com.squaregames.demo.dao.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
 
+    @Qualifier("jpaUserDao")
     @Autowired
-    private UserDao userDao; // Injection de dépendances correcte
-
-    private final AtomicInteger idCounter = new AtomicInteger();
+    private UserDao userDao;
 
     @Override
-    public User getUserById(int userId) {
+    public User getUserById(UUID userId) {
         return userDao.findById(userId);
     }
 
@@ -25,7 +28,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(int userId, User user) {
+    public User updateUser(UUID userId, User user) {
         User existingUser = getUserById(userId);
         if (existingUser != null) {
             existingUser.setName(user.getName());
@@ -37,14 +40,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(int userId) {
+    public void deleteUser(UUID userId) {
         userDao.delete(userId);
     }
 
     @Override
     public UserDto createUser(UserCreationParams params) {
         User newUser = new User();
-        newUser.setId(idCounter.incrementAndGet());
+        newUser.setId(UUID.randomUUID());
         newUser.setName(params.name);
         newUser.setEmail(params.email);
         newUser.setPassword(params.password);
@@ -54,7 +57,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUser(String userId) {
-        int id = Integer.parseInt(userId);
+        UUID id = UUID.fromString(userId);
         User user = getUserById(id);
         if (user != null) {
             return new UserDto(user.getId(), user.getEmail());

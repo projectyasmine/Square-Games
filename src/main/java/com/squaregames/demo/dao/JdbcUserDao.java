@@ -1,5 +1,6 @@
-package com.squaregames.demo;
+package com.squaregames.demo.dao;
 
+import com.squaregames.demo.service.User;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -9,6 +10,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.UUID;
 
 @Component
 public class JdbcUserDao implements UserDao {
@@ -22,8 +24,8 @@ public class JdbcUserDao implements UserDao {
         String query = "SELECT * FROM users";
         return jdbcTemplate.query(query, (resultSet, rowNum) -> {
             User user = new User();
-            user.setId(resultSet.getInt("id"));
-            user.setName(resultSet.getString("name")); // Ajouté car il manquait dans findAll
+            user.setId(UUID.fromString(resultSet.getString("id")));
+            user.setName(resultSet.getString("name"));
             user.setEmail(resultSet.getString("email"));
             user.setPassword(resultSet.getString("password"));
             return user;
@@ -31,12 +33,12 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public User findById(@NotNull int userId) {
+    public User findById(@NotNull UUID userId) {
         String query = "SELECT * FROM users WHERE id = :id";
-        SqlParameterSource namedParameters = new MapSqlParameterSource("id", userId);
+        SqlParameterSource namedParameters = new MapSqlParameterSource("id", userId.toString());
         List<User> users = jdbcTemplate.query(query, namedParameters, (resultSet, rowNum) -> {
             User user = new User();
-            user.setId(resultSet.getInt("id"));
+            user.setId(UUID.fromString(resultSet.getString("id")));
             user.setName(resultSet.getString("name"));
             user.setEmail(resultSet.getString("email"));
             user.setPassword(resultSet.getString("password"));
@@ -56,9 +58,9 @@ public class JdbcUserDao implements UserDao {
     }
 
     @Override
-    public void delete(@NotNull int userId) {
+    public void delete(@NotNull UUID userId) {
         String query = "DELETE FROM users WHERE id = :id";
-        SqlParameterSource namedParameters = new MapSqlParameterSource("id", userId);
+        SqlParameterSource namedParameters = new MapSqlParameterSource("id", userId.toString());
         jdbcTemplate.update(query, namedParameters);
     }
 }

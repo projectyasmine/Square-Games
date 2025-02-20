@@ -1,12 +1,10 @@
-package com.squaregames.demo;
+package com.squaregames.demo.controller;
 
+import com.squaregames.demo.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.AliasFor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 public class UserController {
@@ -23,7 +21,5 @@ public class UserController {
     public UserDto getUser(@PathVariable String userId) {
         return userService.getUser(userId);
     }
-
-
 
 }

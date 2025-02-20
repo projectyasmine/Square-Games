@@ -1,5 +1,7 @@
-package com.squaregames.demo;
+package com.squaregames.demo.dao;
 
+import com.squaregames.demo.service.User;
+import jakarta.transaction.Transactional;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -16,7 +18,8 @@ public class JpaUserDao implements UserDao {
 
     private User toUser(UserEntity userEntity) {
         User user = new User();
-        user.setId(userEntity.id.hashCode()); // Convert UUID to int
+        user.setId(UUID.fromString(userEntity.id));
+        user.setName(userEntity.name);
         user.setEmail(userEntity.email);
         user.setPassword(userEntity.password);
         return user;
@@ -24,9 +27,10 @@ public class JpaUserDao implements UserDao {
 
     private UserEntity toUserEntity(User user) {
         UserEntity userEntity = new UserEntity();
-        userEntity.id = UUID.randomUUID(); // Générer un UUID
-        userEntity.email = user.getEmail();
-        userEntity.password = user.getPassword();
+        userEntity.setId(user.getId() != null ? user.getId() : UUID.randomUUID());
+        userEntity.setName(user.getName());
+        userEntity.setEmail(user.getEmail());
+        userEntity.setPassword(user.getPassword());
         return userEntity;
     }
 
@@ -39,21 +43,22 @@ public class JpaUserDao implements UserDao {
     }
 
     @Override
-    public User findById(@NotNull int userId) {
-        Optional<UserEntity> userEntityOptional = userEntityRepository.findById(UUID.nameUUIDFromBytes(Integer.toString(userId).getBytes()));
+    public User findById(@NotNull UUID userId) {
+        Optional<UserEntity> userEntityOptional = userEntityRepository.findById(userId.toString());
         return userEntityOptional.map(this::toUser).orElse(null);
     }
 
     @Override
+    @Transactional
     @NotNull
     public User upsert(@NotNull User user) {
         UserEntity userEntity = toUserEntity(user);
         userEntityRepository.save(userEntity);
-        return user;
+        return toUser(userEntity);
     }
 
     @Override
-    public void delete(@NotNull int userId) {
-        userEntityRepository.deleteById(UUID.nameUUIDFromBytes(Integer.toString(userId).getBytes()));
+    public void delete(@NotNull UUID userId) {
+        userEntityRepository.deleteById(userId.toString());
     }
 }

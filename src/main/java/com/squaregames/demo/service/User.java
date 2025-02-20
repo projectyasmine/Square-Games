@@ -1,15 +1,18 @@
-package com.squaregames.demo;
+package com.squaregames.demo.service;
+
+import java.util.UUID;
 
 public class User {
-    private int id;
+    private UUID id;
     private String name;
     private String email;
     private String password;
 
-    public User(int id, String name, String email, String password) {
+    public User(UUID id, String name, String email, String password) {
         this.id = id;
         this.name = name;
         this.email = email;
+        this.password = password;
     }
 
     public User() {
@@ -17,11 +20,11 @@ public class User {
     }
 
     // Getters et Setters
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(UUID id) { // Changer le type de int à UUID
         this.id = id;
     }
 
